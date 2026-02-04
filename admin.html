@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<section class="section reveal">
+  <h2>📩 Contact Messages</h2>
+  <div id="messages" class="messages-grid"></div>
+</section>
+
+<script>
+const password = "Sundar123"; // choose your own strong password
+const userPass = prompt("Enter password to access Admin Dashboard:");
+
+if(userPass !== password){
+  alert("Wrong password! Access denied.");
+  window.location.href = "/"; // redirect to homepage
+}
+</script>
+
+
+<script>
+async function loadMessages() {
+  const res = await fetch("https://portfolio-backend-leje.onrender.com/api/messages");
+
+  const data = await res.json();
+  const container = document.getElementById("messages");
+
+  container.innerHTML = data.map(msg => `
+    <div class="message-card">
+      <h4>${msg.name}</h4>
+      <p><b>Email:</b> ${msg.email}</p>
+      <p>${msg.message}</p>
+      <small>${new Date(msg.createdAt).toLocaleString()}</small>
+    </div>
+  `).join("");
+}
+
+loadMessages();
+</script>
+
+</body>
+</html>

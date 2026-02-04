@@ -1,7 +1,12 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -50,4 +55,10 @@ app.get("/api/messages", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error fetching messages" });
   }
+});
+// Serve admin.html with password protection
+app.get("/admin", (req, res) => {
+  const pwd = req.query.pwd;
+  if(pwd !== "Sundar123") return res.send("Access Denied ❌");
+  res.sendFile(path.join(__dirname, "admin.html"));
 });
