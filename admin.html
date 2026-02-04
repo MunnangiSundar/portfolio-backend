@@ -4,66 +4,113 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Basic Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+    body {
+      background: #f4f6f8;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #1e1e1e;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    .messages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .message-card {
+      background: #fff;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .message-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .message-card h4 {
+      margin-bottom: 5px;
+      color: #0077b6;
+    }
+
+    .message-card p {
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+
+    .message-card small {
+      display: block;
+      margin-top: 10px;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    @media(max-width: 600px){
+      h2 { font-size: 1.5rem; }
+      .messages-grid { gap: 15px; }
+    }
+  </style>
 </head>
 <body>
 
-<section class="section reveal">
+<section class="section">
   <h2>📩 Contact Messages</h2>
   <div id="messages" class="messages-grid"></div>
 </section>
 
 <script>
-const password = "Sundar123"; // choose your own strong password
-const userPass = prompt("Enter password to access Admin Dashboard:");
+  // Password prompt
+  const password = "Sundar123";
+  const userPass = prompt("Enter password to access Admin Dashboard:");
 
-if(userPass !== password){
-  alert("Wrong password! Access denied.");
-  window.location.href = "/"; // redirect to homepage
-}
-</script>
-
-
-<script>
-async function loadMessages() {
-  const res = await fetch("https://portfolio-backend-leje.onrender.com/api/messages");
-
-  const data = await res.json();
-  const container = document.getElementById("messages");
-
-  container.innerHTML = data.map(msg => `
-    <div class="message-card">
-      <h4>${msg.name}</h4>
-      <p><b>Email:</b> ${msg.email}</p>
-      <p>${msg.message}</p>
-      <small>${new Date(msg.createdAt).toLocaleString()}</small>
-    </div>
-  `).join("");
-}
-
-loadMessages();
+  if(userPass !== password){
+    alert("Wrong password! Access denied.");
+    window.location.href = "/"; // redirect to homepage
+  }
 </script>
 
 <script>
-async function loadMessages() {
- const res = await fetch("https://portfolio-backend-leje.onrender.com/api/messages");
+  // Load messages from live backend
+  async function loadMessages() {
+    try {
+      const res = await fetch("https://portfolio-backend-leje.onrender.com/api/messages");
+      const data = await res.json();
+      const container = document.getElementById("messages");
 
-  const data = await res.json();
-  const container = document.getElementById("messages");
+      container.innerHTML = data.map(msg => `
+        <div class="message-card">
+          <h4>${msg.name}</h4>
+          <p><b>Email:</b> ${msg.email}</p>
+          <p>${msg.message}</p>
+          <small>${new Date(msg.createdAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</small>
+        </div>
+      `).join("");
+    } catch (error) {
+      console.error("Error loading messages:", error);
+      document.getElementById("messages").innerHTML = "<p style='color:red'>Failed to load messages.</p>";
+    }
+  }
 
-  container.innerHTML = data.map(msg => `
-    <div class="message-card">
-      <h4>${msg.name}</h4>
-      <p><b>Email:</b> ${msg.email}</p>
-      <p>${msg.message}</p>
-      <small>${new Date(msg.createdAt).toLocaleString()}</small>
-    </div>
-  `).join("");
-}
-
-loadMessages();
+  loadMessages();
 </script>
-
 
 </body>
 </html>
