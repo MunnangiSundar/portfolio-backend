@@ -56,9 +56,8 @@ app.get("/api/messages", async (req, res) => {
     res.status(500).json({ message: "Error fetching messages" });
   }
 });
-// Serve admin.html with password protection
+// Serve admin.html without query password
 app.get("/admin", (req, res) => {
-  const pwd = req.query.pwd;
-  if(pwd !== "Sundar123") return res.send("Access Denied ❌");
   res.sendFile(path.join(__dirname, "admin.html"));
 });
+

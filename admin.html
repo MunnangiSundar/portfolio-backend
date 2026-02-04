@@ -44,5 +44,26 @@ async function loadMessages() {
 loadMessages();
 </script>
 
+<script>
+async function loadMessages() {
+ const res = await fetch("https://portfolio-backend-leje.onrender.com/api/messages");
+
+  const data = await res.json();
+  const container = document.getElementById("messages");
+
+  container.innerHTML = data.map(msg => `
+    <div class="message-card">
+      <h4>${msg.name}</h4>
+      <p><b>Email:</b> ${msg.email}</p>
+      <p>${msg.message}</p>
+      <small>${new Date(msg.createdAt).toLocaleString()}</small>
+    </div>
+  `).join("");
+}
+
+loadMessages();
+</script>
+
+
 </body>
 </html>
