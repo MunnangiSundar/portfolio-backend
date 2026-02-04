@@ -23,8 +23,10 @@ const ContactSchema = new mongoose.Schema({
   name: String,
   email: String,
   message: String,
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  read: { type: Boolean, default: false } // New field
 });
+
 
 const Contact = mongoose.model("Contact", ContactSchema);
 
@@ -59,5 +61,25 @@ app.get("/api/messages", async (req, res) => {
 // Serve admin.html without query password
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "admin.html"));
+});
+
+// Mark a message as read
+app.patch("/api/messages/:id/read", async (req, res) => {
+  try {
+    const message = await Contact.findByIdAndUpdate(req.params.id, { read: true }, { new: true });
+    res.json({ message: "Marked as read ✅", data: message });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating message ❌" });
+  }
+});
+
+// Delete a message
+app.delete("/api/messages/:id", async (req, res) => {
+  try {
+    await Contact.findByIdAndDelete(req.params.id);
+    res.json({ message: "Deleted successfully ✅" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting message ❌" });
+  }
 });
 
